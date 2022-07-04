@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    tty: true
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /backend
+    ports:
+      - "3000:3000"
