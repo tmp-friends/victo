@@ -12,3 +12,15 @@ services:
         target: /backend
     ports:
       - "3000:3000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    tty: true
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /frontend
+    ports:
+      - "3001:3001"
