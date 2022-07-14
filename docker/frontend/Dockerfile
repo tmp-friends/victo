@@ -1,8 +1,12 @@
 # TODO: versionを指定する
 FROM node:16-alpine
 
-WORKDIR /frontend
+WORKDIR /app/frontend
 
-EXPOSE 3001
+COPY /backend/package*.json ./
+
+RUN npm i
+
+COPY /frontend ./
 
 CMD [ "npm", "run", "dev" ]
