@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: ./docker/backend/Dockerfile
     volumes:
-      - f_node_modules:/app/frontend/node_modules
+      - ./backend:/app/backend
+      - b_node_modules:/app/backend/node_modules
     tty: true
     ports:
       - "3000:3000"
@@ -16,7 +17,8 @@ services:
       context: .
       dockerfile: ./docker/frontend/Dockerfile
     volumes:
-      - b_node_modules:/app/backend/node_modules
+      - ./frontend:/app/frontend
+      - f_node_modules:/app/frontend/node_modules
     tty: true
     ports:
       - "3001:3001"
