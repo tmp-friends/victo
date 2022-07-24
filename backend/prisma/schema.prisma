@@ -1,8 +1,27 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Vtuber {
+  id Int @id @default(autoincrement())
+  name String
+  belongTo String
+  tweets Tweet[]
+}
+
+model Tweet {
+  id Int @id @default(autoincrement())
+  text String
+  mediaKey Int
+  vtuber Vtuber @relation(fields: [vtuberId], references: [id])
+  vtuberId Int
+
+  @@index(vtuberId)
 }
