@@ -5,8 +5,7 @@ WORKDIR /app/backend
 
 COPY /backend/package*.json ./
 
-RUN npm i &&\
-    npm i -g @nestjs/cli
+RUN npm install && npm i @nestjs/cli
 
 COPY /backend ./
 
