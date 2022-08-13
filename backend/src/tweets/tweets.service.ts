@@ -13,13 +13,12 @@ export class TweetsService {
     this.roClient = client.readOnly;
   }
 
-
   public async fetchFanartTweets() {
     const fanartTweets = await this.roClient.v2.search(
       await this.generateSeachKeyword(),
       {
         // TODO: start_timeを設定する処理を別関数として作成する
-        start_time: '2022-07-23T04:50:40Z',
+        start_time: '2022-08-12T04:50:40Z',
         expansions: ['author_id', 'attachments.media_keys'],
         'tweet.fields': ['created_at', 'public_metrics'],
         'media.fields': ['preview_image_url', 'url'],
