@@ -1,17 +1,6 @@
 version: "3.7"
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./docker/backend/Dockerfile
-    volumes:
-      - ./backend:/app/backend
-      - b_node_modules:/app/backend/node_modules
-    tty: true
-    ports:
-      - "3000:3000"
-
   frontend:
     build:
       context: .
@@ -23,6 +12,31 @@ services:
     ports:
       - "3001:3001"
 
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    volumes:
+      - ./backend:/app/backend
+      - b_node_modules:/app/backend/node_modules
+    tty: true
+    ports:
+      - "3000:3000"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_DB: victo_db
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - victo_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: victo_db
+
 volumes:
   f_node_modules:
   b_node_modules:
+  victo_db_data:
