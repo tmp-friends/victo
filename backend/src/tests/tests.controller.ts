@@ -13,7 +13,7 @@ export class TestsController {
   constructor(private readonly testsService: TestsService){}
 
   @Get()
-  async vtubers(): Promise<Vtuber[]> {
+  async vtubers(): Promise<string> {
     return this.testsService.vtubers();
   }
 }
