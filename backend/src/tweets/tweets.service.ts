@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from 'src/prisma.service';
 import { TwitterApi } from 'twitter-api-v2';
 
 @Injectable()
 export class TweetsService {
   private roClient;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private prisma: PrismaService,
+  ) {
     const BEARER_TOKEN = this.configService.get<string>('BEARER_TOKEN');
     const client = new TwitterApi(BEARER_TOKEN);
     this.roClient = client.readOnly;
@@ -30,7 +34,15 @@ export class TweetsService {
     for await (const fanartTweet of fanartTweets) {
       const medias = fanartTweets.includes.medias(fanartTweet);
       const tweet = { data: fanartTweet, media: medias[0] };
+
+      // TODO: DBにツイートをinsert
       console.log(tweet);
+
+
+     // this.prisma.tweet.create({
+     //   text: tweet.data.text,
+     //   mediaKey: tweet.media.url,
+     // });
     }
   }
 
@@ -38,6 +50,7 @@ export class TweetsService {
     const excludeRetweet = '-is:retweet';
     const hasMedia = 'has:media';
 
+    // TODO: DBからタグを取得する
     return `#みとあーと ${excludeRetweet} ${hasMedia}`;
   }
 
