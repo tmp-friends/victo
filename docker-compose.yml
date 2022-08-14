@@ -26,17 +26,21 @@ services:
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: password
-      MYSQL_DB: victo_db
 
   db:
     image: mysql:8.0
+    command: >
+      mysqld
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --skip-character-set-client-handshake
+
     volumes:
-      - victo_db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: victo_db
 
 volumes:
   f_node_modules:
   b_node_modules:
-  victo_db_data:
+  db_data:
