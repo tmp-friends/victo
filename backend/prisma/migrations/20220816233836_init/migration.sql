@@ -1,7 +1,10 @@
 -- CreateTable
 CREATE TABLE `Vtuber` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
+    `familyName` VARCHAR(191) NOT NULL,
+    `givenName` VARCHAR(191) NOT NULL,
+    `familyNameJa` VARCHAR(191) NOT NULL,
+    `givenNameJa` VARCHAR(191) NOT NULL,
     `belongTo` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)

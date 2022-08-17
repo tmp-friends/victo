@@ -1,4 +1,4 @@
-generator client {
+generator clent {
   provider = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
 }
@@ -11,7 +11,10 @@ datasource db {
 
 model Vtuber {
   id Int @id @default(autoincrement())
-  name String
+  familyName String
+  givenName String
+  familyNameJa String
+  givenNameJa String
   belongTo String
   tweets Tweet[]
 }
@@ -22,6 +25,5 @@ model Tweet {
   mediaKey Int
   vtuber Vtuber @relation(fields: [vtuberId], references: [id])
   vtuberId Int
-
   @@index(vtuberId)
 }
