@@ -9,21 +9,37 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+model Hashtag {
+  id Int @id @default(autoincrement())
+  tagName String
+  isSelf Boolean @default(false)
+  vtubers Vtuber[]
+  tweets Tweet[]
+}
+
 model Vtuber {
   id Int @id @default(autoincrement())
-  familyName String
+  familyName String?
   givenName String
-  familyNameJa String
-  givenNameJa String
-  belongTo String
-  tweets Tweet[]
+  hashtag Hashtag @relation(fields: [hashtagId], references: [id])
+  hashtagId Int
 }
 
 model Tweet {
   id Int @id @default(autoincrement())
-  text String
-  mediaKey Int
-  vtuber Vtuber @relation(fields: [vtuberId], references: [id])
-  vtuberId Int
-  @@index(vtuberId)
+  text String?
+  retweet Int
+  fav Int
+  createdAt DateTime
+  updatedAt DateTime
+  media Media[]
+  hashtag Hashtag @relation(fields: [hashtagId], references: [id])
+  hashtagId Int
+}
+
+model Media {
+  id Int @id @default(autoincrement())
+  url String
+  tweet Tweet @relation(fields: [tweetId], references: [id])
+  tweetId Int
 }

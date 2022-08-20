@@ -1,41 +1,56 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const vtuberData: Prisma.VtuberCreateInput[] = [
+const hashtagData: Prisma.HashtagCreateInput[] = [
   {
-    familyName: 'tsukino',
-    givenName: 'mito',
-    familyNameJa: '月ノ',
-    givenNameJa: '美兎',
-    belongTo: 'nijisanji',
+    tagName: 'みとあーと',
+    isSelf: true,
+    vtubers: {
+      create: [
+        {
+          familyName: '月ノ',
+          givenName: '美兎',
+        },
+      ],
+    },
   },
   {
-    familyName: 'higuchi',
-    givenName: 'kaede',
-    familyNameJa: '樋口',
-    givenNameJa: '楓',
-    belongTo: 'nijisanji',
+    tagName: 'でろあーと',
+    isSelf: true,
+    vtubers: {
+      create: [
+        {
+          familyName: '樋口',
+          givenName: '楓',
+        },
+      ],
+    },
   },
   {
-    familyName: 'sizuka',
-    givenName: 'rin',
-    familyNameJa: '静',
-    givenNameJa: '凛',
-    belongTo: 'nijisanji',
+    tagName: '凛Art',
+    isSelf: true,
+    vtubers: {
+      create: [
+        {
+          familyName: '静',
+          givenName: '凛',
+        },
+      ],
+    },
   },
 ];
 
 const transfar = async () => {
-  const vtubers = [];
-  for (const v of vtuberData) {
-    const vtuber = prisma.vtuber.create({
+  const hashtags = [];
+  for (const v of hashtagData) {
+    const hashtag = prisma.hashtag.create({
       data: v,
     });
 
-    vtubers.push(vtuber);
+    hashtags.push(hashtag);
   }
 
-  return await prisma.$transaction(vtubers);
+  return await prisma.$transaction(hashtags);
 }
 
 const main = async () => {
