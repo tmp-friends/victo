@@ -16,8 +16,34 @@ export class TweetsService {
     this.roClient = client.readOnly;
   }
 
-  public async fetchFanartTweets() {
-    const searchKeyword = await this.generateSeachKeyword();
+  // TODO: NestJSのschedule機能を使用する
+  public async main(): Promise<void> {
+    try {
+      const hashtagList = await this.getHashtagList();
+
+      for await (const hashtag of hashtagList) {
+        const tweets = await this.fetchTweets(hashtag);
+        // TODO: DBにツイートをinsert
+        // await this.insertTweets();
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  private async getHashtagList(): Promise<string[]> {
+    const hashtags = await this.prisma.hashtag.findMany();
+
+    const hashtagList = [];
+    for await (const hashtag of hashtags) {
+      hashtagList.push(hashtag['tagName']);
+    }
+
+    return hashtagList;
+  }
+
+  public async fetchTweets(hashtag: string) {
+    const searchKeyword = await this.generateSeachKeyword(hashtag);
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
 
     const fanartTweets = await this.roClient.v2.search(
@@ -32,26 +58,19 @@ export class TweetsService {
     );
 
     for await (const fanartTweet of fanartTweets) {
+      // TODO: mediaKeyが複数枚の時の対応をする
       const medias = fanartTweets.includes.medias(fanartTweet);
       const tweet = { data: fanartTweet, media: medias[0] };
 
-      // TODO: DBにツイートをinsert
       console.log(tweet);
-
-
-     // this.prisma.tweet.create({
-     //   text: tweet.data.text,
-     //   mediaKey: tweet.media.url,
-     // });
     }
   }
 
-  private async generateSeachKeyword(): Promise<string> {
+  private async generateSeachKeyword(hashtag: string): Promise<string> {
     const excludeRetweet = '-is:retweet';
     const hasMedia = 'has:media';
 
-    // TODO: DBからタグを取得する
-    return `#みとあーと ${excludeRetweet} ${hasMedia}`;
+    return `#${hashtag} ${excludeRetweet} ${hasMedia}`;
   }
 
   private async setWithinTime(): Promise<string[]> {
