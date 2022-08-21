@@ -42,8 +42,8 @@ export class TweetsService {
     return hashtagList;
   }
 
-  public async fetchTweets(hashtag: string) {
-    const searchKeyword = await this.generateSeachKeyword(hashtag);
+  private async fetchTweets(hashtag: string) {
+    const searchKeyword = `#${hashtag} -is:retweet has:media`;
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
 
     const fanartTweets = await this.roClient.v2.search(
@@ -64,13 +64,6 @@ export class TweetsService {
 
       console.log(tweet);
     }
-  }
-
-  private async generateSeachKeyword(hashtag: string): Promise<string> {
-    const excludeRetweet = '-is:retweet';
-    const hasMedia = 'has:media';
-
-    return `#${hashtag} ${excludeRetweet} ${hasMedia}`;
   }
 
   private async setWithinTime(): Promise<string[]> {
