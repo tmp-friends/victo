@@ -27,11 +27,11 @@ model Vtuber {
 
 model Tweet {
   id Int @id @default(autoincrement())
-  tweetDataId Int
+  tweetDataId String
   text String?
   retweetCount Int
   likeCount Int
-  authorId Int
+  authorId String
   tweetUrl String
   tweetedAt DateTime
   createdAt DateTime

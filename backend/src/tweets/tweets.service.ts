@@ -23,8 +23,7 @@ export class TweetsService {
 
       for await (const hashtag of hashtagList) {
         const tweets = await this.fetchTweets(hashtag);
-        // TODO: DBにツイートをinsert
-        // await this.insertTweets();
+        await this.insertTweets(tweets);
       }
     } catch(e) {
       console.log(e);
@@ -42,7 +41,7 @@ export class TweetsService {
     return hashtagList;
   }
 
-  private async fetchTweets(hashtag: string) {
+  private async fetchTweets(hashtag: string): Promise<string[]> {
     const searchKeyword = `#${hashtag} -is:retweet has:media`;
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
 
@@ -57,13 +56,39 @@ export class TweetsService {
       }
     );
 
+    const tweets = []
     for await (const fanartTweet of fanartTweets) {
-      // TODO: mediaKeyが複数枚の時の対応をする
-      const medias = fanartTweets.includes.medias(fanartTweet);
-      const tweet = { data: fanartTweet, media: medias[0] };
+      const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
 
-      console.log(tweet);
+      const tweet = {
+        tweet_id: fanartTweet['id'],
+        text: text,
+        retweet_count: Number(fanartTweet['public_metrics']['retweet_count']),
+        like_count: Number(fanartTweet['public_metrics']['like_count']),
+        author_id: fanartTweet['author_id'],
+        tweet_url: tweetUrl,
+        tweeted_at: new Date(fanartTweet['created_at']),
+      };
+
+      // media.fieldsは追加情報のため別処理
+      const mediaFields = fanartTweets.includes.medias(fanartTweet);
+      // 画像は複数枚ある
+      const media = [];
+      for await (const mediaField of mediaFields) {
+        const shapedMediaField = {
+          type: mediaField['type'],
+          url: mediaField['url'],
+        };
+        media.push(shapedMediaField);
+      }
+      tweet['media'] = media;
+
+      tweets.push(tweet);
     }
+    // console.log(tweets);
+
+    // TODO: TWEETS型を作って格納しreturnする
+    return tweets;
   }
 
   private async setWithinTime(): Promise<string[]> {
@@ -71,11 +96,44 @@ export class TweetsService {
 
     // ISO規格
     // getMonth()は0はじまりのため1加算する必要あり
+    // TODO: 日本の時間に合わせる
     const yesterdayMidnight =
       `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() - 1}T00:00:00Z`;
     const todayMidnight =
       `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T00:00:00Z`;
 
     return [yesterdayMidnight, todayMidnight];
+  }
+
+  private async extractTweetUrl(tweetText: string): Promise<string[]> {
+    // https://t.co/<空白以外の1文字以上>
+    const tweetUrl = tweetText.match(/https:\/\/t\.co\/\S*$/)[0];
+    const text = tweetText.replace(` ${tweetUrl}`, '')
+
+    return [text, tweetUrl];
+  }
+
+  private async insertTweets(tweets: string[]): Promise<void> {
+    const test = {
+      hashtagId: 2,
+      tweetDataId: '1569345337839730688',
+      text: 'VRやってみたい\n1573話\n#凛Art\n#ギルザレン画廊 \n#ムギザレン',
+      retweetCount: 21,
+      likeCount: 154,
+      authorId: '2394220412',
+      tweetUrl: 'https://t.co/cXsCbK9eDv',
+      tweetedAt: new Date('2022-09-12T15:21:00.000Z'),
+      // TODO: 現在時刻を挿入する
+      createdAt: new Date('2022-09-12T15:21:00.000Z'),
+      updatedAt: new Date('2022-09-12T15:21:00.000Z'),
+      media: {
+        create: {
+          type: '',
+          url: '',
+        },
+      },
+    };
+
+    await this.prisma.tweet.create({ data: test });
   }
 }

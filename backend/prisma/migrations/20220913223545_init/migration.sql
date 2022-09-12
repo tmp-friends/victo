@@ -20,11 +20,11 @@ CREATE TABLE `Vtuber` (
 -- CreateTable
 CREATE TABLE `Tweet` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `tweetDataId` INTEGER NOT NULL,
+    `tweetDataId` VARCHAR(191) NOT NULL,
     `text` VARCHAR(191) NULL,
     `retweetCount` INTEGER NOT NULL,
     `likeCount` INTEGER NOT NULL,
-    `authorId` INTEGER NOT NULL,
+    `authorId` VARCHAR(191) NOT NULL,
     `tweetUrl` VARCHAR(191) NOT NULL,
     `tweetedAt` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL,
