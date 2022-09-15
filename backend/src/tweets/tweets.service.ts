@@ -22,8 +22,8 @@ export class TweetsService {
       const hashtagList = await this.getHashtagList();
 
       for await (const hashtag of hashtagList) {
-        const tweets = await this.fetchTweets(hashtag);
-        await this.insertTweets(tweets);
+        const tweets = await this.fetchTweets(hashtag['tagName']);
+        await this.insertTweets(hashtag['id'], tweets);
       }
     } catch(e) {
       console.log(e);
@@ -35,7 +35,11 @@ export class TweetsService {
 
     const hashtagList = [];
     for await (const hashtag of hashtags) {
-      hashtagList.push(hashtag['tagName']);
+      const hashtagField = {
+        id: hashtag['id'],
+        tagName: hashtag['tagName'],
+      }
+      hashtagList.push(hashtagField);
     }
 
     return hashtagList;
@@ -113,9 +117,9 @@ export class TweetsService {
     return [text, tweetUrl];
   }
 
-  private async insertTweets(tweets: string[]): Promise<void> {
+  private async insertTweets(id: number, tweets: string[]): Promise<void> {
     const test = {
-      hashtagId: 2,
+      hashtagId: id,
       tweetDataId: '1569345337839730688',
       text: 'VRやってみたい\n1573話\n#凛Art\n#ギルザレン画廊 \n#ムギザレン',
       retweetCount: 21,
