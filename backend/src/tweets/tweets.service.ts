@@ -85,22 +85,22 @@ export class TweetsService {
 
       tweets.push(tweet);
     }
-    // console.log(tweets);
+    console.log(tweets);
 
     // TODO: TWEETS型を作って格納しreturnする
     return tweets;
   }
 
   private async setWithinTime(): Promise<string[]> {
-    const date = new Date();
+    // 日本標準時間で取得
+    const date = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
 
     // ISO規格
     // getMonth()は0はじまりのため1加算する必要あり
-    // TODO: 日本の時間に合わせる
     const yesterdayMidnight =
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() - 1}T00:00:00Z`;
+      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() - 1}T00:00:00+09:00`;
     const todayMidnight =
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T00:00:00Z`;
+      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T00:00:00+09:00`;
 
     return [yesterdayMidnight, todayMidnight];
   }
