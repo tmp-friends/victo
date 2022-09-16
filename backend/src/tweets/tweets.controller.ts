@@ -7,6 +7,6 @@ export class TweetsController {
 
   @Get()
   tweets() {
-    return this.tweetsService.fetchFanartTweets();
+    return this.tweetsService.main();
   }
 }

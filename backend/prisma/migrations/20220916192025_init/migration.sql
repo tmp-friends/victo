@@ -20,11 +20,15 @@ CREATE TABLE `Vtuber` (
 -- CreateTable
 CREATE TABLE `Tweet` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `tweetDataId` VARCHAR(191) NOT NULL,
     `text` VARCHAR(191) NULL,
-    `retweet` INTEGER NOT NULL,
-    `fav` INTEGER NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL,
-    `updatedAt` DATETIME(3) NOT NULL,
+    `retweetCount` INTEGER NOT NULL,
+    `likeCount` INTEGER NOT NULL,
+    `authorId` VARCHAR(191) NOT NULL,
+    `tweetUrl` VARCHAR(191) NOT NULL,
+    `tweetedAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `hashtagId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -33,6 +37,7 @@ CREATE TABLE `Tweet` (
 -- CreateTable
 CREATE TABLE `Media` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `type` VARCHAR(191) NOT NULL,
     `url` VARCHAR(191) NOT NULL,
     `tweetId` INTEGER NOT NULL,
 

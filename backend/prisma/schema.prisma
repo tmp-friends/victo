@@ -27,11 +27,15 @@ model Vtuber {
 
 model Tweet {
   id Int @id @default(autoincrement())
+  tweetDataId String
   text String?
-  retweet Int
-  fav Int
-  createdAt DateTime
-  updatedAt DateTime
+  retweetCount Int
+  likeCount Int
+  authorId String
+  tweetUrl String
+  tweetedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   media Media[]
   hashtag Hashtag @relation(fields: [hashtagId], references: [id])
   hashtagId Int
@@ -39,6 +43,7 @@ model Tweet {
 
 model Media {
   id Int @id @default(autoincrement())
+  type String
   url String
   tweet Tweet @relation(fields: [tweetId], references: [id])
   tweetId Int
