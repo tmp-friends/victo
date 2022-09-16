@@ -75,6 +75,9 @@ export class TweetsService {
         authorId: fanartTweet['author_id'],
         tweetUrl: tweetUrl,
         tweetedAt: new Date(fanartTweet['created_at']),
+        media: {
+          create: [],
+        },
       };
 
       // media.fieldsは追加情報のため別処理
