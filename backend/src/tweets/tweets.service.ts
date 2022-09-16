@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma.service';
-import { TwitterApi } from 'twitter-api-v2';
+import { TwitterApi, TwitterApiReadOnly, TweetSearchRecentV2Paginator } from 'twitter-api-v2';
 
 @Injectable()
 export class TweetsService {
-  private roClient;
+  private roClient: TwitterApiReadOnly;
 
   constructor(
     private configService: ConfigService,
@@ -30,7 +30,7 @@ export class TweetsService {
     }
   }
 
-  private async fetchTweets(hashtag: string): Promise<string[]> {
+  private async fetchTweets(hashtag: string): Promise<TweetSearchRecentV2Paginator> {
     const searchKeyword = `#${hashtag} -is:retweet has:media`;
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
 
@@ -62,7 +62,7 @@ export class TweetsService {
     return [yesterdayMidnight, todayMidnight];
   }
 
-  private async insertTweets(id: number, fanartTweets: string[]): Promise<void> {
+  private async insertTweets(id: number, fanartTweets: TweetSearchRecentV2Paginator): Promise<void> {
     for await (const fanartTweet of fanartTweets) {
       const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
 
