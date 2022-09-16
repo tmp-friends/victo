@@ -19,30 +19,15 @@ export class TweetsService {
   // TODO: NestJSのschedule機能を使用する
   public async main(): Promise<void> {
     try {
-      const hashtagList = await this.getHashtagList();
+      const hashtagList = await this.prisma.hashtag.findMany();
 
       for await (const hashtag of hashtagList) {
-        const tweets = await this.fetchTweets(hashtag['tagName']);
-        await this.insertTweets(hashtag['id'], tweets);
+        const fanartTweets = await this.fetchTweets(hashtag['tagName']);
+        await this.insertTweets(hashtag['id'], fanartTweets);
       }
     } catch(e) {
       console.log(e);
     }
-  }
-
-  private async getHashtagList(): Promise<string[]> {
-    const hashtags = await this.prisma.hashtag.findMany();
-
-    const hashtagList = [];
-    for await (const hashtag of hashtags) {
-      const hashtagField = {
-        id: hashtag['id'],
-        tagName: hashtag['tagName'],
-      }
-      hashtagList.push(hashtagField);
-    }
-
-    return hashtagList;
   }
 
   private async fetchTweets(hashtag: string): Promise<string[]> {
@@ -60,39 +45,7 @@ export class TweetsService {
       }
     );
 
-    const tweets = []
-    for await (const fanartTweet of fanartTweets) {
-      const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
-
-      const tweet = {
-        tweet_id: fanartTweet['id'],
-        text: text,
-        retweet_count: Number(fanartTweet['public_metrics']['retweet_count']),
-        like_count: Number(fanartTweet['public_metrics']['like_count']),
-        author_id: fanartTweet['author_id'],
-        tweet_url: tweetUrl,
-        tweeted_at: new Date(fanartTweet['created_at']),
-      };
-
-      // media.fieldsは追加情報のため別処理
-      const mediaFields = fanartTweets.includes.medias(fanartTweet);
-      // 画像は複数枚ある
-      const media = [];
-      for await (const mediaField of mediaFields) {
-        const shapedMediaField = {
-          type: mediaField['type'],
-          url: mediaField['url'],
-        };
-        media.push(shapedMediaField);
-      }
-      tweet['media'] = media;
-
-      tweets.push(tweet);
-    }
-    console.log(tweets);
-
-    // TODO: TWEETS型を作って格納しreturnする
-    return tweets;
+    return fanartTweets;
   }
 
   private async setWithinTime(): Promise<string[]> {
@@ -109,35 +62,43 @@ export class TweetsService {
     return [yesterdayMidnight, todayMidnight];
   }
 
+  private async insertTweets(id: number, fanartTweets: string[]): Promise<void> {
+    for await (const fanartTweet of fanartTweets) {
+      const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
+
+      const data = {
+        hashtagId: id,
+        tweetDataId: fanartTweet['id'],
+        text: text,
+        retweetCount: Number(fanartTweet['public_metrics']['retweet_count']),
+        likeCount: Number(fanartTweet['public_metrics']['like_count']),
+        authorId: fanartTweet['author_id'],
+        tweetUrl: tweetUrl,
+        tweetedAt: new Date(fanartTweet['created_at']),
+      };
+
+      // media.fieldsは追加情報のため別処理
+      const mediaFields = fanartTweets.includes.medias(fanartTweet);
+      // 画像は複数枚ある
+      const media = [];
+      for await (const mediaField of mediaFields) {
+        const mediaData = {
+          type: mediaField['type'],
+          url: mediaField['url'],
+        };
+        media.push(mediaData);
+      }
+      data['media']['create']= media;
+
+      await this.prisma.tweet.create({ data });
+    }
+  }
+
   private async extractTweetUrl(tweetText: string): Promise<string[]> {
     // https://t.co/<空白以外の1文字以上>
     const tweetUrl = tweetText.match(/https:\/\/t\.co\/\S*$/)[0];
     const text = tweetText.replace(` ${tweetUrl}`, '')
 
     return [text, tweetUrl];
-  }
-
-  private async insertTweets(id: number, tweets: string[]): Promise<void> {
-    const test = {
-      hashtagId: id,
-      tweetDataId: '1569345337839730688',
-      text: 'VRやってみたい\n1573話\n#凛Art\n#ギルザレン画廊 \n#ムギザレン',
-      retweetCount: 21,
-      likeCount: 154,
-      authorId: '2394220412',
-      tweetUrl: 'https://t.co/cXsCbK9eDv',
-      tweetedAt: new Date('2022-09-12T15:21:00.000Z'),
-      // TODO: 現在時刻を挿入する
-      createdAt: new Date('2022-09-12T15:21:00.000Z'),
-      updatedAt: new Date('2022-09-12T15:21:00.000Z'),
-      media: {
-        create: {
-          type: '',
-          url: '',
-        },
-      },
-    };
-
-    await this.prisma.tweet.create({ data: test });
   }
 }

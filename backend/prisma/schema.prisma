@@ -34,8 +34,8 @@ model Tweet {
   authorId String
   tweetUrl String
   tweetedAt DateTime
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   media Media[]
   hashtag Hashtag @relation(fields: [hashtagId], references: [id])
   hashtagId Int

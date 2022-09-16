@@ -27,8 +27,8 @@ CREATE TABLE `Tweet` (
     `authorId` VARCHAR(191) NOT NULL,
     `tweetUrl` VARCHAR(191) NOT NULL,
     `tweetedAt` DATETIME(3) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL,
-    `updatedAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `hashtagId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
