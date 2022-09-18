@@ -16,8 +16,12 @@ export class BatchService {
     this.roClient = client.readOnly;
   }
 
-  // TODO: NestJSのschedule機能を使用する
+  /**
+   * @remarks
+   * ツイートを取得し、DBにインサートするバッチ処理
+   */
   public async main(): Promise<void> {
+    // TODO: NestJSのschedule機能を使用する
     try {
       const hashtagList = await this.prisma.hashtag.findMany();
 
@@ -30,6 +34,13 @@ export class BatchService {
     }
   }
 
+  /**
+   * @remarks
+   * TwitterAPIを用いて前日分のツイートを取得する処理
+   *
+   * @param hashtag - 取得したいツイートに付与されているハッシュタグ名
+   * @returns 取得したツイート配列
+   */
   private async fetchTweets(hashtag: string): Promise<TweetSearchRecentV2Paginator> {
     const searchKeyword = `#${hashtag} -is:retweet has:media`;
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
@@ -48,6 +59,12 @@ export class BatchService {
     return fanartTweets;
   }
 
+  /**
+   * @remarks
+   * (日本標準時間で)前日の開始と終了の時刻を取得する処理
+   *
+   * @returns [yesterdayMidnight, todayMidnight] - [前日深夜0時, 本日深夜0時]
+   */
   private async setWithinTime(): Promise<string[]> {
     // 日本標準時間で取得
     const date = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
@@ -62,6 +79,13 @@ export class BatchService {
     return [yesterdayMidnight, todayMidnight];
   }
 
+  /**
+   * @remarks
+   * ツイートをDBにインサートする処理
+   *
+   * @param id - Hashtagの番号
+   * @param fanartTweets - 取得したツイート配列
+   */
   private async insertTweets(id: number, fanartTweets: TweetSearchRecentV2Paginator): Promise<void> {
     for await (const fanartTweet of fanartTweets) {
       const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
@@ -97,6 +121,13 @@ export class BatchService {
     }
   }
 
+  /**
+   * @remarks
+   * ツイート本文に含まれているツイートURLを抽出する処理
+   *
+   * @params tweetText - ツイート本文
+   * @returns [text, tweetUrl] - [ツイート本文, ツイートURL]
+   */
   private async extractTweetUrl(tweetText: string): Promise<string[]> {
     // https://t.co/<空白以外の1文字以上>
     const tweetUrl = tweetText.match(/https:\/\/t\.co\/\S*$/)[0];
