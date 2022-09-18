@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TwitterApi, TwitterApiReadOnly, TweetSearchRecentV2Paginator } from 'twitter-api-v2';
+import {
+  TwitterApi,
+  TwitterApiReadOnly,
+  TweetSearchRecentV2Paginator,
+} from 'twitter-api-v2';
 import { PrismaConfig } from 'src/config/prisma/prisma.config';
 
 import { Hashtag } from 'src/interface/hashtag.interface';
@@ -33,7 +37,7 @@ export class BatchService {
         const fanartTweets = await this.fetchTweets(hashtag['tagName']);
         await this.insertTweets(hashtag['id'], fanartTweets);
       }
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
@@ -45,20 +49,19 @@ export class BatchService {
    * @param hashtag - 取得したいツイートに付与されているハッシュタグ名
    * @returns 取得したツイート配列
    */
-  private async fetchTweets(hashtag: string): Promise<TweetSearchRecentV2Paginator> {
+  private async fetchTweets(
+    hashtag: string,
+  ): Promise<TweetSearchRecentV2Paginator> {
     const searchKeyword = `#${hashtag} -is:retweet has:media`;
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
 
-    const fanartTweets = await this.roClient.v2.search(
-      searchKeyword,
-      {
-        start_time: yesterdayMidnight,
-        end_time: todayMidnight,
-        expansions: ['author_id', 'attachments.media_keys'],
-        'tweet.fields': ['created_at', 'public_metrics'],
-        'media.fields': ['preview_image_url', 'url'],
-      }
-    );
+    const fanartTweets = await this.roClient.v2.search(searchKeyword, {
+      start_time: yesterdayMidnight,
+      end_time: todayMidnight,
+      expansions: ['author_id', 'attachments.media_keys'],
+      'tweet.fields': ['created_at', 'public_metrics'],
+      'media.fields': ['preview_image_url', 'url'],
+    });
 
     return fanartTweets;
   }
@@ -71,14 +74,18 @@ export class BatchService {
    */
   private async setWithinTime(): Promise<string[]> {
     // 日本標準時間で取得
-    const date = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
+    const date = new Date(
+      Date.now() + (new Date().getTimezoneOffset() + 9 * 60) * 60 * 1000,
+    );
 
     // ISO規格
     // getMonth()は0はじまりのため1加算する必要あり
-    const yesterdayMidnight =
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() - 1}T00:00:00+09:00`;
-    const todayMidnight =
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T00:00:00+09:00`;
+    const yesterdayMidnight = `${date.getFullYear()}-${date.getMonth() + 1}-${
+      date.getDate() - 1
+    }T00:00:00+09:00`;
+    const todayMidnight = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}T00:00:00+09:00`;
 
     return [yesterdayMidnight, todayMidnight];
   }
@@ -90,7 +97,10 @@ export class BatchService {
    * @param id - Hashtagの番号
    * @param fanartTweets - twitter-api-v2で取得したツイート配列
    */
-  private async insertTweets(id: number, fanartTweets: TweetSearchRecentV2Paginator): Promise<void> {
+  private async insertTweets(
+    id: number,
+    fanartTweets: TweetSearchRecentV2Paginator,
+  ): Promise<void> {
     for await (const fanartTweet of fanartTweets) {
       const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
 
@@ -119,7 +129,7 @@ export class BatchService {
         };
         media.push(mediaData);
       }
-      data['media']['create']= media;
+      data['media']['create'] = media;
 
       await this.prisma.tweet.create({ data });
     }
@@ -135,7 +145,7 @@ export class BatchService {
   private async extractTweetUrl(tweetText: string): Promise<string[]> {
     // https://t.co/<空白以外の1文字以上>
     const tweetUrl = tweetText.match(/https:\/\/t\.co\/\S*$/)[0];
-    const text = tweetText.replace(` ${tweetUrl}`, '')
+    const text = tweetText.replace(` ${tweetUrl}`, '');
 
     return [text, tweetUrl];
   }
