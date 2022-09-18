@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaConfig } from 'src/config/prisma/prisma.config';
 import { TwitterApi, TwitterApiReadOnly, TweetSearchRecentV2Paginator } from 'twitter-api-v2';
 
 @Injectable()
-export class TweetsService {
+export class BatchService {
   private roClient: TwitterApiReadOnly;
 
   constructor(
     private configService: ConfigService,
-    private prisma: PrismaService,
+    private prisma: PrismaConfig,
   ) {
     const BEARER_TOKEN = this.configService.get<string>('BEARER_TOKEN');
     const client = new TwitterApi(BEARER_TOKEN);
