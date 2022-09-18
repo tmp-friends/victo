@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaConfig } from 'src/config/prisma/prisma.config';
 import { TwitterApi, TwitterApiReadOnly, TweetSearchRecentV2Paginator } from 'twitter-api-v2';
+import { PrismaConfig } from 'src/config/prisma/prisma.config';
+
+import { Hashtag } from 'src/interface/hashtag.interface';
+import { CreateTweetData } from 'src/interface/create-tweet-data.interface';
+import { CreateMediaData } from 'src/interface/create-media-data.interface';
 
 @Injectable()
 export class BatchService {
@@ -23,7 +27,7 @@ export class BatchService {
   public async main(): Promise<void> {
     // TODO: NestJSのschedule機能を使用する
     try {
-      const hashtagList = await this.prisma.hashtag.findMany();
+      const hashtagList: Hashtag[] = await this.prisma.hashtag.findMany();
 
       for await (const hashtag of hashtagList) {
         const fanartTweets = await this.fetchTweets(hashtag['tagName']);
@@ -84,13 +88,13 @@ export class BatchService {
    * ツイートをDBにインサートする処理
    *
    * @param id - Hashtagの番号
-   * @param fanartTweets - 取得したツイート配列
+   * @param fanartTweets - twitter-api-v2で取得したツイート配列
    */
   private async insertTweets(id: number, fanartTweets: TweetSearchRecentV2Paginator): Promise<void> {
     for await (const fanartTweet of fanartTweets) {
       const [text, tweetUrl] = await this.extractTweetUrl(fanartTweet['text']);
 
-      const data = {
+      const data: CreateTweetData = {
         hashtagId: id,
         tweetDataId: fanartTweet['id'],
         text: text,
@@ -109,7 +113,7 @@ export class BatchService {
       // 画像は複数枚ある
       const media = [];
       for await (const mediaField of mediaFields) {
-        const mediaData = {
+        const mediaData: CreateMediaData = {
           type: mediaField['type'],
           url: mediaField['url'],
         };
