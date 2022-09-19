@@ -4,7 +4,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: ./docker/frontend/Dockerfile
+      dockerfile: ./scripts/frontend/Dockerfile
     volumes:
       - ./frontend:/app/frontend
       - f_node_modules:/app/frontend/node_modules
@@ -15,7 +15,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./docker/backend/Dockerfile
+      dockerfile: ./scripts/backend/Dockerfile
     volumes:
       - ./backend:/app/backend
       - b_node_modules:/app/backend/node_modules
