@@ -52,7 +52,7 @@ export class BatchService {
   private async fetchTweets(
     hashtag: string,
   ): Promise<TweetSearchRecentV2Paginator> {
-    const searchKeyword = `#${hashtag} -is:retweet has:media`;
+    const searchKeyword = `#${hashtag} -is:retweet has:images`;
     const [yesterdayMidnight, todayMidnight] = await this.setWithinTime();
 
     const fanartTweets = await this.roClient.v2.search(searchKeyword, {
