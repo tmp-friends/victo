@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
 
+import { TagsFindAll } from 'src/interface/tags-find-all.interface';
+
 @Controller('tags')
 export class TagsController {
   constructor(private tagsService: TagsService) {}
@@ -16,7 +18,7 @@ export class TagsController {
     // @Queryがstringでしか取得できないので、ParseIntPipeでnumber型に変換
     @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip: number,
     @Query('take', new DefaultValuePipe(0), ParseIntPipe) take: number,
-  ): Promise<any> {
+  ): Promise<TagsFindAll[]> {
     return this.tagsService.findAll(skip, take);
   }
 }

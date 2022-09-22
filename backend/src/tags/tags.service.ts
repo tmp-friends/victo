@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaConfig } from 'src/config/prisma/prisma.config';
 
+import { TagsFindAll } from 'src/interface/tags-find-all.interface';
+
 @Injectable()
 export class TagsService {
   private DEFAULT_LIMIT = 30;
@@ -9,12 +11,20 @@ export class TagsService {
 
   /**
    * @remarks
+   * 全てのタグのlikeCountが最も多いツイートを1件取得し、
+   * そのツイートのlikeCount順にタグを並び替える
+   *
+   * @param skip - 取得する開始位置
    * @param take - 取得する件数
+   * @returns [Hashtag + Tweet + Media]
    */
-  public async findAll(skip: number, take: number): Promise<any> {
-    const hashtagData = await this.prisma.hashtag.findMany({
+  public async findAll(skip: number, take: number): Promise<TagsFindAll[]> {
+    const hashtagData: TagsFindAll[] = await this.prisma.hashtag.findMany({
       include: {
         tweets: {
+          include: {
+            media: true,
+          },
           orderBy: {
             likeCount: 'desc',
           },
@@ -24,7 +34,7 @@ export class TagsService {
     });
 
     // sort - いいね順にタグを並び替え
-    hashtagData.sort((prevObject, nextObject) =>
+    hashtagData.sort((prevObject: TagsFindAll, nextObject: TagsFindAll) =>
       prevObject.tweets[0].likeCount < nextObject.tweets[0].likeCount ? 1 : -1,
     );
 
@@ -33,7 +43,7 @@ export class TagsService {
       skip,
       take === 0 ? this.DEFAULT_LIMIT : take,
     );
-    console.log(result);
+
     return result;
   }
 }
