@@ -1,4 +1,4 @@
-import { CreateMediaData } from './create-media-data.interface'
+import { CreateMediaData } from './create-media-data.interface';
 
 export class CreateTweetData {
   hashtagId: number;
@@ -13,4 +13,3 @@ export class CreateTweetData {
     create: CreateMediaData | null[];
   };
 }
-

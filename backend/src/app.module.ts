@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TagsModule } from './tags/tags.module';
 import { BatchModule } from './batch/batch.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    BatchModule
-  ],
+  imports: [ConfigModule.forRoot(), TagsModule, BatchModule],
   controllers: [],
   providers: [],
 })

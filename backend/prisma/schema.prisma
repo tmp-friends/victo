@@ -21,7 +21,7 @@ model Vtuber {
   id Int @id @default(autoincrement())
   familyName String?
   givenName String
-  hashtag Hashtag @relation(fields: [hashtagId], references: [id])
+  hashtag Hashtag? @relation(fields: [hashtagId], references: [id])
   hashtagId Int
 }
 
@@ -37,7 +37,7 @@ model Tweet {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   media Media[]
-  hashtag Hashtag @relation(fields: [hashtagId], references: [id])
+  hashtag Hashtag? @relation(fields: [hashtagId], references: [id])
   hashtagId Int
 }
 
@@ -45,6 +45,6 @@ model Media {
   id Int @id @default(autoincrement())
   type String
   url String
-  tweet Tweet @relation(fields: [tweetId], references: [id])
+  tweet Tweet? @relation(fields: [tweetId], references: [id])
   tweetId Int
 }

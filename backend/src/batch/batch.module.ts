@@ -7,6 +7,6 @@ import { BatchService } from './batch.service';
 @Module({
   imports: [ConfigModule],
   controllers: [BatchController],
-  providers: [BatchService, PrismaConfig]
+  providers: [PrismaConfig, BatchService],
 })
 export class BatchModule {}
