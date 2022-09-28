@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { CorsMiddleware } from './config/cors.middleware';
 import { TagsModule } from './tags/tags.module';
 import { BatchModule } from './batch/batch.module';
 
@@ -8,4 +9,8 @@ import { BatchModule } from './batch/batch.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
