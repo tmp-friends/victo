@@ -10,7 +10,7 @@ export const SiteFooter: FC = () => (
     <Flex as="footer" justify="center" height="10vh">
       <ContentWrapper>
         <Link href="/" passHref>
-          <Text color="whiteAlpha.600">©komekami</Text>
+          <Text color="BlackAlpha.600">©komekami</Text>
         </Link>
       </ContentWrapper>
     </Flex>
