@@ -20,9 +20,9 @@ export const SiteHeader: FC = () => {
           Pickup
         </Button>
       </Link>
-      <Link href="/tags" passHref>
+      <Link href="/hashtags" passHref>
         <Button fontSize="sm" variant="ghost">
-          Tags
+          Hashtags
         </Button>
       </Link>
     </Flex>
