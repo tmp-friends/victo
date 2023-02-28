@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  app:
+    image: tmp-friends/victo:latest
+    container_name: victo
+    volumes:
+      - ../../app:/var/www
+      - f_node_modules:/var/www/node_modules
+    tty: true
+    ports:
+      - "3000:3000"
+
+volumes:
+  f_node_modules:
