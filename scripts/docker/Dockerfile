@@ -20,6 +20,12 @@ USER $user
 
 COPY --chown=$user:$user /app/package*.json ./
 
+# user権限でnpm iするための設定
+# @see: https://zenn.dev/ikeo/articles/8d0c88dcedf256b09f73
+RUN install -m 0755 -o $user -g $user -d ~/.npm-global \
+    && npm config set prefix "~/.npm-global"
+ENV PATH=~/.npm-global/bin:$PATH
+
 RUN npm i
 
 COPY --chown=$user:$user /app ./

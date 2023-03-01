@@ -3,7 +3,7 @@ import NextLink from "next/link"
 import useSWR from "swr";
 import { Avatar, Box, Tag, TagLabel } from "@chakra-ui/react";
 
-import { Hashtags } from "../../types/hashtags";
+import { Hashtag } from "../../types/hashtag";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -17,7 +17,7 @@ const HashTags: NextPage = () => {
   return (
     <>
       {
-        data.map((v: Hashtags, i: number) => {
+        data.map((v: Hashtag, i: number) => {
           return (
             <Box key={i} as={NextLink} href={`/hashtags/${v.id}`}>
               <Tag size="lg" borderRadius="full" mr={1} mb={2}>

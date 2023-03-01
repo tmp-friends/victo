@@ -1,4 +1,4 @@
-export type Hashtags = {
+export type Hashtag = {
   id: number
   name: string
   is_self: boolean
