@@ -5,7 +5,7 @@ import { Avatar, Box, Tag, TagLabel } from "@chakra-ui/react"
 import { useHashtagsSWR } from "../../hooks/swr/use-hashtags-swr"
 import { Hashtag } from "../../types/hashtag"
 
-const HashTags: NextPage = () => {
+const Hashtags: NextPage = () => {
   const { hashtags, isLoading, isError } = useHashtagsSWR()
 
   if (isError) return <div>failed to load</div>
@@ -35,4 +35,4 @@ const HashTags: NextPage = () => {
   )
 }
 
-export default HashTags
+export default Hashtags
