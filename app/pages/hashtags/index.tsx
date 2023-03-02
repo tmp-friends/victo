@@ -6,7 +6,6 @@ import { useHashtagsSWR } from "../../hooks/swr/use-hashtags-swr"
 import { Hashtag } from "../../types/hashtag"
 
 const HashTags: NextPage = () => {
-  // TODO: 100件ごと取得
   const { hashtags, isLoading, isError } = useHashtagsSWR()
 
   if (isError) return <div>failed to load</div>
