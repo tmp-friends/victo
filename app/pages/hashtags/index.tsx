@@ -1,23 +1,20 @@
-import type { NextPage } from "next";
+import type { NextPage } from "next"
 import NextLink from "next/link"
-import useSWR from "swr";
-import { Avatar, Box, Tag, TagLabel } from "@chakra-ui/react";
+import { Avatar, Box, Tag, TagLabel } from "@chakra-ui/react"
 
-import { Hashtags } from "../../types/hashtags";
+import { useHashtagsSWR } from "../../hooks/swr/use-hashtags-swr"
+import { Hashtag } from "../../types/hashtag"
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const Hashtags: NextPage = () => {
+  const { hashtags, isLoading, isError } = useHashtagsSWR()
 
-const HashTags: NextPage = () => {
-  // TODO: 100件ごと取得
-  const { data, error } = useSWR("http://localhost:3001/hashtags?withVtuber=true", fetcher)
-
-  if (error) return <div>failed to load</div>
-  if (!data) return <div>loading...</div>
+  if (isError) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
 
   return (
     <>
       {
-        data.map((v: Hashtags, i: number) => {
+        hashtags.map((v: Hashtag, i: number) => {
           return (
             <Box key={i} as={NextLink} href={`/hashtags/${v.id}`}>
               <Tag size="lg" borderRadius="full" mr={1} mb={2}>
@@ -38,4 +35,4 @@ const HashTags: NextPage = () => {
   )
 }
 
-export default HashTags
+export default Hashtags
