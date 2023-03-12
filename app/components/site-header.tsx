@@ -5,43 +5,48 @@ import {
   Flex,
   Button,
   Spacer,
+  Avatar,
 } from "@chakra-ui/react"
+
 import { LoginButton } from "./login-button";
 import { useAuthContext } from "../auth/AuthContext";
-import { getCookie } from "typescript-cookie";
 
 export const SiteHeader: FC = () => {
   const { user } = useAuthContext()
   const isLogin = !!user
 
-  console.log(isLogin)
+  console.log(user)
   return (
     <>
       <Flex as="header" shadow="md" alignItems="center">
         <Link href="/" passHref>
-          <Button fontSize="md" variant="ghost">
+          <Button fontSize="lg" variant="ghost">
             Victo
           </Button>
         </Link>
-        <Link href="/" passHref>
-          <Button fontSize="sm" variant="ghost">
-            Home
-          </Button>
-        </Link>
         <Link href="/pickup" passHref>
-          <Button fontSize="sm" variant="ghost">
+          <Button fontSize="lg" variant="ghost">
             Pickup
           </Button>
         </Link>
         <Link href="/hashtags" passHref>
-          <Button fontSize="sm" variant="ghost">
+          <Button fontSize="lg" variant="ghost">
             Hashtags
           </Button>
         </Link>
         <Spacer />
-        <Box m={2}>
-          <LoginButton />
-        </Box>
+
+        {isLogin
+          ? <Box m={2}>
+            <Avatar
+              src={user?.photoURL ?? undefined}
+              size="md"
+              name={user?.displayName ?? undefined}
+              mr={2}
+            />
+          </Box>
+          : <Box m={2}><LoginButton /></Box>
+        }
       </Flex>
     </>
   );
