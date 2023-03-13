@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Text, SimpleGrid } from "@chakra-ui/react";
 import TwitterTweetEmbed from "react-tweet-embed";
+
 import { TweetObject } from "../types/tweet-object";
 
 export const Tweets: FC<TweetObject[]> = (tweets: TweetObject[]) => {
