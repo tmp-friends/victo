@@ -37,16 +37,18 @@ export const SiteHeader: FC = () => {
         <Spacer />
 
         {isLogin
-          ? <Box m={2}>
-            <Avatar
-              src={user?.profileImageUrl ?? undefined}
-              size="md"
-              name={user?.name ?? undefined}
-              mr={2}
-              // requestにリファラー情報が含まれると403エラーになる
-              referrerPolicy="no-referrer"
-            />
-          </Box>
+          ? <Link href="/my">
+            <Box m={2}>
+              <Avatar
+                src={user?.profile_image_url ?? undefined}
+                size="md"
+                name={user?.name ?? undefined}
+                mr={3}
+                // requestにリファラー情報が含まれると403エラーになる
+                referrerPolicy="no-referrer"
+              />
+            </Box>
+          </Link>
           : <Box m={2}><LoginButton /></Box>
         }
       </Flex>

@@ -2,10 +2,9 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import axios from "axios"
 
 export type User = {
-  id: string
   name: string
   email: string
-  profileImageUrl: string
+  profile_image_url: string
 } | null
 
 const AuthContext = createContext<Partial<User>>({})
@@ -29,13 +28,11 @@ export const AuthProvider = ({ children }: AuthProps) => {
           { withCredentials: true },
         )
 
-        console.log(res)
         setUser(
           {
-            id: res.data.id,
             name: res.data.name,
             email: res.data.email,
-            profileImageUrl: res.data.profile_image_url,
+            profile_image_url: res.data.profile_image_url,
           } as User
         )
       } catch (err) {
