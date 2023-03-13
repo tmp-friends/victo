@@ -17,10 +17,10 @@ const Hashtags: NextPage = () => {
         hashtags.map((v: Hashtag, i: number) => {
           return (
             <Box key={i} as={NextLink} href={`/hashtags/${v.id}`}>
-              <Tag size="lg" borderRadius="full" mr={1} mb={2}>
+              <Tag size="lg" borderRadius="full" boxShadow="lg" mr={4} mb={6}>
                 <Avatar
                   src={v.profile_image_url}
-                  size="xs"
+                  size="md"
                   name={v.vtuber_name}
                   ml={-1}
                   mr={2}

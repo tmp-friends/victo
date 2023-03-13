@@ -5,16 +5,19 @@ import theme from "./config/theme";
 import { ContentWrapper } from "../components/content-wrapper";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { AuthProvider } from "../auth/AuthContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
-      <SiteHeader />
-      <ContentWrapper>
-        <Component {...pageProps} />
-      </ContentWrapper>
-      <SiteFooter />
-    </ChakraProvider>
+    <AuthProvider>
+      <ChakraProvider theme={theme}>
+        <SiteHeader />
+        <ContentWrapper>
+          <Component {...pageProps} />
+        </ContentWrapper>
+        <SiteFooter />
+      </ChakraProvider>
+    </AuthProvider>
   );
 }
 
