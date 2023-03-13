@@ -10,15 +10,18 @@ import {
   ModalFooter,
 } from "@chakra-ui/react"
 import { FcGoogle } from "@react-icons/all-files/fc/FcGoogle"
+import { useRouter } from "next/router"
 
-import { login } from "../auth/login";
+import { login } from "../auth/login"
 
 export const LoginButton = () => {
   const { onOpen, isOpen, onClose } = useDisclosure()
 
+  const router = useRouter()
   const handleClick = async () => {
     await login()
     onClose()
+    router.push("/my")
   }
 
   return (
