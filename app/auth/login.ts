@@ -23,7 +23,7 @@ export const login = async () => {
 }
 
 export const postLogin = (idToken: string) => {
-  axios.post("http://localhost:3001/v1/login",
+  axios.post("http://localhost:3001/v1/users/login",
     { idToken },
     { withCredentials: true },
   )

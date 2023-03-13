@@ -12,7 +12,7 @@ import { LoginButton } from "./login-button";
 import { useAuthContext } from "../auth/AuthContext";
 
 export const SiteHeader: FC = () => {
-  const { user } = useAuthContext()
+  const user = useAuthContext()
   const isLogin = !!user
 
   console.log(user)
@@ -39,10 +39,12 @@ export const SiteHeader: FC = () => {
         {isLogin
           ? <Box m={2}>
             <Avatar
-              src={user?.photoURL ?? undefined}
+              src={user?.profileImageUrl ?? undefined}
               size="md"
-              name={user?.displayName ?? undefined}
+              name={user?.name ?? undefined}
               mr={2}
+              // requestにリファラー情報が含まれると403エラーになる
+              referrerPolicy="no-referrer"
             />
           </Box>
           : <Box m={2}><LoginButton /></Box>

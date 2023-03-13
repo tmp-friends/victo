@@ -23,7 +23,7 @@ export const LoginButton = () => {
 
   return (
     <>
-      <Button colorScheme="twitter" onClick={onOpen}>Log in</Button>
+      <Button colorScheme="teal" color="white" onClick={onOpen}>Log in</Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
