@@ -8,8 +8,8 @@ import {
   Avatar,
 } from "@chakra-ui/react"
 
-import { LoginButton } from "./login-button";
-import { useAuthContext } from "../auth/AuthContext";
+import { LoginButton } from "../login-button";
+import { useAuthContext } from "../../auth/AuthContext";
 
 export const SiteHeader: FC = () => {
   const user = useAuthContext()
