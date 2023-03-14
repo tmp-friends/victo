@@ -2,9 +2,9 @@ import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import theme from "./config/theme";
-import { ContentWrapper } from "../components/content-wrapper";
-import { SiteHeader } from "../components/site-header";
-import { SiteFooter } from "../components/site-footer";
+import { ContentWrapper } from "../components/common/content-wrapper";
+import { SiteHeader } from "../components/common/site-header";
+import { SiteFooter } from "../components/common/site-footer";
 import { AuthProvider } from "../auth/AuthContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
