@@ -1,13 +1,16 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import axios from "axios"
+import { Profile } from "../types/profile"
 
-export type User = {
-  name: string
-  email: string
-  profile_image_url: string
-} | null
+const defaultProfile: Profile = {
+  name: "",
+  email: "",
+  image_url: "",
+  is_user: true,
+}
 
-const AuthContext = createContext<Partial<User>>({})
+const AuthContext = createContext<Profile>(
+)
 
 export const useAuthContext = () => {
   return useContext(AuthContext)
@@ -18,7 +21,7 @@ export type AuthProps = {
 }
 
 export const AuthProvider = ({ children }: AuthProps) => {
-  const [user, setUser] = useState<User>(null)
+  const [user, setUser] = useState<Profile>()
 
   useEffect(() => {
     const getUser = async () => {
@@ -28,15 +31,18 @@ export const AuthProvider = ({ children }: AuthProps) => {
           { withCredentials: true },
         )
 
+        const profile = {
+          name: res.data.name ?? "",
+          email: res.data.email ?? "",
+          image_url: res.data.profile_image_url ?? "",
+          is_user: true,
+        }
+
         setUser(
-          {
-            name: res.data.name,
-            email: res.data.email,
-            profile_image_url: res.data.profile_image_url,
-          } as User
+          profile
         )
       } catch (err) {
-        setUser(null)
+        console.log(err)
       }
     }
     getUser()

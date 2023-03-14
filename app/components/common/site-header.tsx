@@ -15,7 +15,6 @@ export const SiteHeader: FC = () => {
   const user = useAuthContext()
   const isLogin = !!user
 
-  console.log(user)
   return (
     <>
       <Flex as="header" shadow="md" alignItems="center">
@@ -40,9 +39,9 @@ export const SiteHeader: FC = () => {
           ? <Link href="/my">
             <Box m={2}>
               <Avatar
-                src={user?.profile_image_url ?? undefined}
+                src={user.image_url}
                 size="md"
-                name={user?.name ?? undefined}
+                name={user.name}
                 mr={3}
                 // requestにリファラー情報が含まれると403エラーになる
                 referrerPolicy="no-referrer"
