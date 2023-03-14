@@ -1,10 +1,12 @@
 import type { NextPage } from "next"
 import { useRouter } from "next/router"
+import { Divider } from "@chakra-ui/react"
 
 import { Tweets } from "../../components/tweets"
 import { useTweetsByHashtagIdSWR } from "../../hooks/swr/use-tweets-swr"
 import { useHashtagSWR } from "../../hooks/swr/use-hashtag-swr"
-import { Avatar, Button, Divider, Flex, Heading, Spacer } from "@chakra-ui/react"
+import { ProfileContent } from "../../components/profile-content"
+import { Profile } from "../../types/profile"
 
 
 const HashtagsId: NextPage = () => {
@@ -17,21 +19,19 @@ const HashtagsId: NextPage = () => {
   if (isError) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
 
+  const profile: Profile = {
+    name: hashtag?.name ?? "",
+    email: hashtag?.email ?? "",
+    image_url: hashtag?.profile_image_url ?? "",
+    is_user: false,
+  }
+
   return (
     <>
-      <Flex alignItems="center" mt={4} mb={8}>
-        <Avatar
-          src={hashtag.profile_image_url}
-          size="lg"
-          name={hashtag.name}
-          mr={3}
-        />
-        <Heading as="h1" size="md">
-          {hashtag.name}
-        </Heading>
-        <Button size="lg" colorScheme="gray" ml={10}>Follow</Button>
-      </Flex>
+      {ProfileContent(profile)}
+
       <Divider mb={8} />
+
       {Tweets(tweets)}
     </>
   )

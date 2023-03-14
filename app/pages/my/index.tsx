@@ -1,26 +1,21 @@
 import type { NextPage } from "next"
-import { Flex, Avatar, Box, Text } from "@chakra-ui/react"
 import { useAuthContext } from "../../auth/AuthContext"
+import { ProfileContent } from "../../components/profile-content";
+import { Profile } from "../../types/profile"
 
 const MyPage: NextPage = () => {
   const user = useAuthContext()
 
+  const profile: Profile = {
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    image_url: user?.profile_image_url ?? "",
+    is_user: true,
+  }
+
   return (
     <>
-      <Box>
-        <Flex alignItems="center" mt={4} mb={8}>
-          <Avatar
-            src={user?.profile_image_url}
-            size="xl"
-            name={user?.name}
-            mr={6}
-          />
-          <Box>
-            <Text fontSize="2xl" fontWeight="semibold">{user?.name}</Text>
-            <Text fontSize="lg">{user?.email}</Text>
-          </Box>
-        </Flex>
-      </Box>
+      {ProfileContent(profile)}
     </>
   )
 };
