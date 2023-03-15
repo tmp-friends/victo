@@ -9,8 +9,7 @@ const defaultProfile: Profile = {
   is_user: true,
 }
 
-const AuthContext = createContext<Profile>(
-)
+const AuthContext = createContext<Profile | null>(defaultProfile)
 
 export const useAuthContext = () => {
   return useContext(AuthContext)
@@ -21,7 +20,7 @@ export type AuthProps = {
 }
 
 export const AuthProvider = ({ children }: AuthProps) => {
-  const [user, setUser] = useState<Profile>()
+  const [user, setUser] = useState<Profile | null>(null)
 
   useEffect(() => {
     const getUser = async () => {

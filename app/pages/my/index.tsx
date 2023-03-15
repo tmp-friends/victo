@@ -7,7 +7,7 @@ const MyPage: NextPage = () => {
 
   return (
     <>
-      {ProfileContent(user)}
+      {ProfileContent(user ?? { name: "", email: "", image_url: "", is_user: true })}
     </>
   )
 };
