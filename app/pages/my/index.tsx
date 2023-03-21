@@ -1,13 +1,16 @@
 import type { NextPage } from "next"
-import { useAuthContext } from "../../auth/AuthContext"
-import { ProfileContent } from "../../components/profile-content";
+import { useRouter } from "next/router"
+import { useUserContext } from "../../provider/user-context"
+import { UserProfile } from "../../components/user-profile"
 
 const MyPage: NextPage = () => {
-  const user = useAuthContext()
+  const user = useUserContext()
+  const isLogin = !!user
+  const router = useRouter()
 
   return (
     <>
-      {ProfileContent(user ?? { name: "", email: "", image_url: "", is_user: true })}
+      {isLogin ? UserProfile(user) : router.push("/login")}
     </>
   )
 };

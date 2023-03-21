@@ -9,10 +9,10 @@ import {
 } from "@chakra-ui/react"
 
 import { LoginButton } from "../login-button";
-import { useAuthContext } from "../../auth/AuthContext";
+import { useUserContext } from "../../provider/user-context";
 
 export const SiteHeader: FC = () => {
-  const user = useAuthContext()
+  const user = useUserContext()
   const isLogin = !!user
 
   return (
