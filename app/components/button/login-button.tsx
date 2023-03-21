@@ -12,7 +12,7 @@ import {
 import { FcGoogle } from "@react-icons/all-files/fc/FcGoogle"
 import { useRouter } from "next/router"
 
-import { login } from "../auth/login"
+import { login } from "../../hooks/login"
 
 export const LoginButton = () => {
   const { onOpen, isOpen, onClose } = useDisclosure()

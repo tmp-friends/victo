@@ -1,6 +1,6 @@
-export type Profile = {
+export type Vtuber = {
+  id: number
   name: string
   email: string
   image_url: string
-  is_user: boolean
 }

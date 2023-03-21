@@ -5,11 +5,11 @@ import theme from "./config/theme";
 import { ContentWrapper } from "../components/common/content-wrapper";
 import { SiteHeader } from "../components/common/site-header";
 import { SiteFooter } from "../components/common/site-footer";
-import { AuthProvider } from "../auth/AuthContext";
+import { UserProvider } from "../provider/user-context";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
+    <UserProvider>
       <ChakraProvider theme={theme}>
         <SiteHeader />
         <ContentWrapper>
@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </ContentWrapper>
         <SiteFooter />
       </ChakraProvider>
-    </AuthProvider>
+    </UserProvider>
   );
 }
 
