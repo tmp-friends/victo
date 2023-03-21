@@ -3,10 +3,10 @@ import { useRouter } from "next/router"
 import { Divider } from "@chakra-ui/react"
 
 import { Tweets } from "../../components/tweets"
-import { useTweetsByHashtagIdSWR } from "../../hooks/swr/use-tweets-swr"
+import { useTweetsSWR } from "../../hooks/swr/use-tweets-swr"
 import { useHashtagSWR } from "../../hooks/swr/use-hashtag-swr"
-import { ProfileContent } from "../../components/profile-content"
-import { Profile } from "../../types/profile"
+import { VtuberProfile } from "../../components/vtuber-profile"
+import { Vtuber } from "../../types/vtuber"
 
 
 const HashtagsId: NextPage = () => {
@@ -14,21 +14,21 @@ const HashtagsId: NextPage = () => {
   const { id } = router.query
 
   const { hashtag } = useHashtagSWR(id)
-  const { tweets, isLoading, isError } = useTweetsByHashtagIdSWR(id)
+  const { tweets, isLoading, isError } = useTweetsSWR([parseInt(id?.toString() ?? "0")])
 
   if (isError) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
 
-  const profile: Profile = {
+  const vtuber: Vtuber = {
+    id: hashtag?.id,
     name: hashtag?.name ?? "",
     email: hashtag?.email ?? "",
     image_url: hashtag?.profile_image_url ?? "",
-    is_user: false,
   }
 
   return (
     <>
-      {ProfileContent(profile)}
+      {VtuberProfile(vtuber)}
 
       <Divider mb={8} />
 
