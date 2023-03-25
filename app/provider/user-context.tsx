@@ -23,7 +23,7 @@ export const UserProvider = ({ children }: UserProps) => {
       try {
         // ユーザ情報を取得
         const res = await axios.get(
-          "http://localhost:3001/v1/users/me",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/me`,
           { withCredentials: true },
         )
 
@@ -38,7 +38,7 @@ export const UserProvider = ({ children }: UserProps) => {
         // ユーザがフォロー中のHashtagを取得
         const hashtags: number[] = []
         const resFollowingHashtags = await axios.get(
-          `http://localhost:3001/v1/users/${res?.data.id}/following_hashtags`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${res?.data.id}/following_hashtags`,
           { withCredentials: true }
         )
 

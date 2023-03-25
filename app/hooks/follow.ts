@@ -6,7 +6,7 @@ export const follow = async (hashtagId: number) => {
 
   try {
     await axios.post(
-      "http://localhost:3001/v1/hashtags/follow",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/hashtags/follow`,
       {
         id: hashtagId,
         user_id: user?.id,
@@ -26,7 +26,7 @@ export const unfollow = async (hashtagId: number) => {
 
   try {
     await axios.post(
-      "http://localhost:3001/v1/hashtags/unfollow",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/hashtags/unfollow`,
       {
         id: hashtagId,
         user_id: user?.id,
