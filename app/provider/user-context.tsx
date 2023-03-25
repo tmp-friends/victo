@@ -56,6 +56,8 @@ export const UserProvider = ({ children }: UserProps) => {
 
     getUser()
   }, [])
+
+  // BUG: 未ログインだと表示されなくなる
   if (!user) return <div>loading...</div>
 
   return <UserContext.Provider value={user}> {children} </UserContext.Provider>

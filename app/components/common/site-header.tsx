@@ -8,7 +8,7 @@ import {
   Avatar,
 } from "@chakra-ui/react"
 
-import { LoginButton } from "../login-button";
+import { LoginButton } from "../button/login-button";
 import { useUserContext } from "../../provider/user-context";
 
 export const SiteHeader: FC = () => {

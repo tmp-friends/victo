@@ -5,7 +5,6 @@ import TwitterTweetEmbed from "react-tweet-embed";
 import { TweetObject } from "../types/tweet-object";
 
 export const Tweets: FC<TweetObject[]> = (tweets) => {
-  console.log(typeof (tweets))
   if (tweets === undefined || !tweets.length) {
     return (
       <Text fontWeight="semibold" align="center">
