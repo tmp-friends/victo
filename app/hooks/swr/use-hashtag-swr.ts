@@ -3,7 +3,7 @@ import { fetcher } from "./fetcher"
 
 export const useHashtagSWR = (id: string | string[] | undefined) => {
   const { data, error } = useSWR(
-    `http://localhost:3001/v1/hashtags/${id}?withVtuber=true`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/hashtags/${id}?withVtuber=true`,
     fetcher,
   )
 
