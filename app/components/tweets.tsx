@@ -4,8 +4,8 @@ import TwitterTweetEmbed from "react-tweet-embed";
 
 import { TweetObject } from "../types/tweet-object";
 
-export const Tweets: FC<TweetObject[]> = (tweets: TweetObject[]) => {
-  if (!tweets?.length) {
+export const Tweets: FC<TweetObject[]> = (tweets) => {
+  if (tweets === undefined || !tweets.length) {
     return (
       <Text fontWeight="semibold" align="center">
         Tweets not found

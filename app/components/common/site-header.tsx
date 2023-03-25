@@ -8,14 +8,13 @@ import {
   Avatar,
 } from "@chakra-ui/react"
 
-import { LoginButton } from "./login-button";
-import { useAuthContext } from "../auth/AuthContext";
+import { LoginButton } from "../button/login-button";
+import { useUserContext } from "../../provider/user-context";
 
 export const SiteHeader: FC = () => {
-  const user = useAuthContext()
+  const user = useUserContext()
   const isLogin = !!user
 
-  console.log(user)
   return (
     <>
       <Flex as="header" shadow="md" alignItems="center">
@@ -37,16 +36,18 @@ export const SiteHeader: FC = () => {
         <Spacer />
 
         {isLogin
-          ? <Box m={2}>
-            <Avatar
-              src={user?.profileImageUrl ?? undefined}
-              size="md"
-              name={user?.name ?? undefined}
-              mr={2}
-              // requestにリファラー情報が含まれると403エラーになる
-              referrerPolicy="no-referrer"
-            />
-          </Box>
+          ? <Link href="/my">
+            <Box m={2}>
+              <Avatar
+                src={user.image_url}
+                size="md"
+                name={user.name}
+                mr={3}
+                // requestにリファラー情報が含まれると403エラーになる
+                referrerPolicy="no-referrer"
+              />
+            </Box>
+          </Link>
           : <Box m={2}><LoginButton /></Box>
         }
       </Flex>

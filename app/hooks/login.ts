@@ -16,7 +16,6 @@ export const login = async () => {
     const idToken = await getIdToken(result.user, true)
 
     await postLogin(idToken)
-
   } catch (err) {
     console.error(err)
   }
