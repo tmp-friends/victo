@@ -14,10 +14,7 @@ const HashtagsId: NextPage = () => {
   const { id } = router.query
 
   const { hashtag } = useHashtagSWR(id)
-  const { tweets, isLoading, isError } = useTweetsSWR([parseInt(id?.toString() ?? "0")])
-
-  if (isError) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
+  const { tweets } = useTweetsSWR([parseInt(id?.toString() ?? "0")])
 
   const vtuber: Vtuber = {
     id: hashtag?.id,

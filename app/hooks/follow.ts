@@ -20,3 +20,27 @@ export const follow = async (hashtagId: number) => {
     console.log(err)
   }
 }
+
+export const unfollow = async (hashtagId: number) => {
+  const user = useUserContext()
+
+  try {
+    await axios.post(
+      "http://localhost:3001/v1/hashtags/unfollow",
+      {
+        id: hashtagId,
+        user_id: user?.id,
+      },
+      { withCredentials: true },
+    )
+
+    // フォローしたHashtagをuserのfollowing_hashtagsから削除する
+    if (user) {
+      user.following_hashtags = user.following_hashtags.filter(
+        (v) => v !== hashtagId,
+      )
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
