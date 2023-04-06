@@ -1,37 +1,112 @@
-import type { NextPage } from "next"
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next"
 import { useRouter } from "next/router"
+import { ApiContext, Hashtag } from "../../types/data"
 import { Divider } from "@chakra-ui/react"
 
-import { Tweets } from "../../components/tweets"
-import { useTweetsSWR } from "../../hooks/swr/use-tweets-swr"
-import { useHashtagSWR } from "../../hooks/swr/use-hashtag-swr"
-import { VtuberProfile } from "../../components/vtuber-profile"
-import { Vtuber } from "../../types/vtuber"
+import VtuberProfile from "../../components/organisms/VtuberProfile"
+import EmbedTweets from "../../components/organisms/EmbedTweets"
+import useHashtag from "../../services/hashtags/use-hashtag"
+import useTweets from "../../services/tweets/use-tweets"
+import getHashtags from "../../services/hashtags/get-hashtags"
+import getHashtag from "../../services/hashtags/get-hashtag"
+import getTweets from "../../services/tweets/get-tweets"
 
+const context: ApiContext = {
+  apiRootUrl: process.env.NEXT_PUBLIC_API_ROOT_URL ?? "http://localhost:3001",
+}
 
-const HashtagsId: NextPage = () => {
+type HashtagPageProps = InferGetStaticPropsType<typeof getStaticProps>
+
+const HashtagPage: NextPage<HashtagPageProps> = ({
+  id,
+  hashtag: initialHashtag,
+  tweets: initialTweets,
+}: HashtagPageProps) => {
   const router = useRouter()
-  const { id } = router.query
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
 
-  const { hashtag } = useHashtagSWR(id)
-  const { tweets } = useTweetsSWR([parseInt(id?.toString() ?? "0")])
+  const hashtagData = useHashtag(context, { id, withVtuber: true, initial: initialHashtag })
+  const tweetsData = useTweets(
+    context,
+    {
+      hashtagIds: [id],
+      limit: 20,
+      props: ["id", "tweet_id", "hashtag_id"],
+    },
+  )
 
-  const vtuber: Vtuber = {
-    id: hashtag?.id,
-    name: hashtag?.name ?? "",
-    email: hashtag?.email ?? "",
-    image_url: hashtag?.profile_image_url ?? "",
+  const hashtag = hashtagData.hashtag ?? initialHashtag
+  const tweets = tweetsData.tweets ?? initialTweets
+
+  const tweetIds: string[] = []
+  for (const v of tweets) {
+    tweetIds.push(v.tweet_id)
   }
 
   return (
     <>
-      {VtuberProfile(vtuber)}
+      {VtuberProfile({
+        id: hashtag.id,
+        name: hashtag.name,
+        imageUrl: hashtag.profile_image_url
+      })}
 
       <Divider mb={8} />
 
-      {Tweets(tweets)}
+      {EmbedTweets({ tweetIds })}
     </>
   )
 }
 
-export default HashtagsId
+export const getStaticPaths: GetStaticPaths = async () => {
+  const context: ApiContext = {
+    apiRootUrl: process.env.API_BASE_URL ?? "",
+  }
+
+  // ハッシュタグからパスを生成
+  const hashtags = await getHashtags(context)
+  const paths = hashtags.map((v: Hashtag) => {
+    return `/hashtags/${v.id}`
+  })
+
+  return { paths, fallback: true }
+}
+
+export const getStaticProps: GetStaticProps = async ({
+  params
+}: GetStaticPropsContext) => {
+  const context: ApiContext = {
+    apiRootUrl: process.env.API_BASE_URL ?? "",
+  }
+
+  if (!params) {
+    throw new Error("params is undefined")
+  }
+
+  // ハッシュタグを取得し、静的ページを生成
+  // paramsはstringで提供される
+  const hashtagId = Number(params.id)
+  const hashtag = await getHashtag(context, { id: hashtagId, withVtuber: true })
+  const tweets = await getTweets(
+    context,
+    {
+      hashtagIds: [hashtagId],
+      limit: 20,
+      props: ["id", "tweet_id", "hashtag_id"],
+    },
+  )
+
+  return {
+    props: {
+      id: hashtagId,
+      hashtag,
+      tweets,
+    },
+    // 弱整合性
+    revalidate: 60,
+  }
+}
+
+export default HashtagPage
