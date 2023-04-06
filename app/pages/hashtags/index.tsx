@@ -1,15 +1,29 @@
-import type { NextPage } from "next"
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next"
 import NextLink from "next/link"
 import { Avatar, Box, Tag, TagLabel } from "@chakra-ui/react"
 
-import { useHashtagsSWR } from "../../hooks/swr/use-hashtags-swr"
 import { Hashtag } from "../../types/hashtag"
+import { ApiContext } from "../../types/data"
+import getHashtags from "../../services/hashtags/get-hashtags"
+import useHashtags from "../../services/hashtags/use-hashtags"
 
-const Hashtags: NextPage = () => {
-  const { hashtags, isLoading, isError } = useHashtagsSWR()
+const context: ApiContext = {
+  apiRootUrl: process.env.NEXT_PUBLIC_API_ROOT_URL ?? "",
+}
 
-  if (isError) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
+type HashtagsPageProps = InferGetStaticPropsType<typeof getStaticProps>
+
+const HashtagsPage: NextPage<HashtagsPageProps> = ({
+  hashtags: initialHashtags,
+}: HashtagsPageProps) => {
+  const hashtagsData = useHashtags(
+    context,
+    {
+      initial: initialHashtags,
+    },
+  )
+
+  const hashtags = hashtagsData.hashtags ?? initialHashtags
 
   return (
     <>
@@ -35,4 +49,18 @@ const Hashtags: NextPage = () => {
   )
 }
 
-export default Hashtags
+export const getStaticProps: GetStaticProps = async () => {
+  const context: ApiContext = {
+    apiRootUrl: process.env.API_BASE_URL ?? "",
+  }
+
+  const hashtags = await getHashtags(context, { withVtuber: true })
+
+  return {
+    props: {
+      hashtags: hashtags,
+    }
+  }
+}
+
+export default HashtagsPage

@@ -7,9 +7,19 @@ services:
     volumes:
       - ../../app:/var/www
       - node_modules:/var/www/node_modules
+    # 本番環境での環境変数はvercelのGUIから設定する
+    environment:
+      - API_BASE_URL=http://victo-api:3001
+      - NEXT_PUBLIC_API_BASE_PATH=/api/proxy
     tty: true
     ports:
       - "3000:3000"
+    networks:
+      - victo_network
 
 volumes:
   node_modules:
+
+networks:
+  victo_network:
+    external: true
