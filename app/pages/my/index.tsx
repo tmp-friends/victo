@@ -1,16 +1,27 @@
 import type { NextPage } from "next"
 import { useRouter } from "next/router"
-import { useUserContext } from "../../provider/user-context"
-import { UserProfile } from "../../components/user-profile"
+import { useAuthContext } from "../../contexts/AuthContext"
+import UserProfile from "../../components/organisms/UserProfile"
 
 const MyPage: NextPage = () => {
-  const user = useUserContext()
-  const isLogin = !!user
-  const router = useRouter()
+  const { authUser } = useAuthContext()
+  const isLogin = authUser && authUser.id !== undefined
+
+  // TODO: authguard
 
   return (
     <>
-      {isLogin ? UserProfile(user) : router.push("/login")}
+      {
+        isLogin
+          ? UserProfile({
+            id: authUser.id,
+            name: authUser.name,
+            imageUrl: authUser.profile_image_url,
+            email: authUser.email,
+          })
+          // TODO: フォロー中のタグを表示する
+          : <></>
+      }
     </>
   )
 };

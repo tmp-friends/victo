@@ -1,49 +1,65 @@
-import type { NextPage } from "next";
-import { Avatar, Divider, Wrap, WrapItem } from "@chakra-ui/react";
-import { useUserContext } from "../provider/user-context";
-import { useHashtagsSWR } from "../hooks/swr/use-hashtags-swr";
-import { Hashtag } from "../types/hashtag";
-import { Tweets } from "../components/tweets";
-import { useTweetsSWR } from "../hooks/swr/use-tweets-swr";
-import { useState } from "react";
+import type { NextPage } from "next"
+import { useState } from "react"
+
+import { Avatar, Divider, Wrap, WrapItem } from "@chakra-ui/react"
+
+import { ApiContext, Hashtag } from "../types/data"
+import EmbedTweets from "../components/organisms/EmbedTweets"
+import { useFollowingHashtagsContext } from "../contexts/FollowingHashtagsContext"
+import useTweets from "../services/tweets/use-tweets"
+
+const context: ApiContext = {
+  apiRootUrl: process.env.NEXT_PUBLIC_API_ROOT_URL ?? "http://localhost:3001",
+}
 
 const TopPage: NextPage = () => {
-  const user = useUserContext()
+  const { followingHashtags, isLoading } = useFollowingHashtagsContext()
 
-  const followingHashtags = user?.following_hashtags ?? []
-  const [dispHashtag, setDispHashtag] = useState<number[]>(followingHashtags)
+  // followingHashtagsがオブジェクトで返ってくるので配列形式に変換する
+  const l: Hashtag[] = []
+  const hashtagIds: number[] = []
+  for (const v of followingHashtags ?? []) {
+    l.push(v)
+    hashtagIds.push(v.id)
+  }
 
-  const { hashtags } = useHashtagsSWR(followingHashtags)
-  const { tweets, isLoading, isError } = useTweetsSWR(dispHashtag)
+  const [dispHashtag, setDispHashtag] = useState<number[]>(hashtagIds)
 
-  if (isError) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
+  const { tweets } = useTweets(context, { hashtagIds: dispHashtag, limit: 20 })
+
+  const tweetIds: string[] = []
+  for (const v of tweets ?? []) {
+    tweetIds.push(v.tweet_id)
+  }
 
   return (
     <>
-      {/* AvatarでフォローしているHashtagのVtuberを表示する */}
       <Wrap>
         {
-          hashtags?.map((v: Hashtag, i: number) => {
-            return (
-              <WrapItem key={i} onClick={() => setDispHashtag([v.id])}>
-                <Avatar
-                  size="lg"
-                  name={v.name ?? ""}
-                  src={v.profile_image_url ?? ""}
-                />
-              </WrapItem>
-            )
-          })
+          isLoading
+            ? <div>Loading...</div>
+            : l?.map((v: Hashtag, i: number) => {
+              return (
+                // AvatarでフォローしているHashtagのVtuberを表示する
+                <WrapItem key={i} onClick={() => setDispHashtag([v.id])}>
+                  <Avatar
+                    size="lg"
+                    name={v.name ?? ""}
+                    src={v.profile_image_url ?? ""}
+                  />
+                </WrapItem>
+              )
+            })
         }
       </Wrap>
 
       <Divider my={4} />
 
       {/* Hashtag毎のツイートを表示する */}
-      {Tweets(tweets)}
+      {EmbedTweets({ tweetIds })}
     </>
   )
 }
+
 
 export default TopPage
