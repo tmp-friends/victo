@@ -10,18 +10,22 @@ import {
   ModalFooter,
 } from "@chakra-ui/react"
 import { FcGoogle } from "@react-icons/all-files/fc/FcGoogle"
-import { useRouter } from "next/router"
 
-import { login } from "../../hooks/login"
+interface LoginModalProps {
+  /**
+   * ログインボタンを押したときのイベントハンドラ
+   */
+  onLogin?: () => void
+}
 
-export const LoginButton = () => {
+/**
+ * ログインモーダル
+ */
+const LoginModal = ({ onLogin }: LoginModalProps) => {
   const { onOpen, isOpen, onClose } = useDisclosure()
 
-  const router = useRouter()
-  const handleClick = async () => {
-    await login()
-    onClose()
-    router.push("/my")
+  const handleLogin = async () => {
+    onLogin && onLogin()
   }
 
   return (
@@ -38,7 +42,7 @@ export const LoginButton = () => {
               leftIcon={<FcGoogle size={22} />}
               size="lg"
               variant="outline"
-              onClick={handleClick}
+              onClick={handleLogin}
             >
               Login with Google
             </Button>
@@ -51,3 +55,5 @@ export const LoginButton = () => {
     </>
   )
 }
+
+export default LoginModal
