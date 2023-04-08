@@ -7,7 +7,7 @@ export type User = {
 }
 
 // ツイート
-export type TweetObject = {
+export type Tweet = {
   id: number
   tweet_id: string
   text: string
@@ -19,6 +19,9 @@ export type TweetObject = {
   created_at: Date
   updated_at: Date
   hashtag_id: number
+  media_key: string
+  media_url: string
+  media_type: string
 }
 
 // ハッシュタグ

@@ -1,28 +1,68 @@
-import { SimpleGrid, Text } from "@chakra-ui/react"
-import TwitterTweetEmbed from "react-tweet-embed"
+import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, Image, SimpleGrid, Text } from "@chakra-ui/react"
+import { Tweet } from "../../../types/data"
 
 interface EmbedTweetsProps {
   /**
-   * TweetIDの配列
+   * Tweetの配列
    */
-  tweetIds: string[]
+  tweets?: Tweet[]
 }
 
-const EmbedTweets: React.FC<EmbedTweetsProps> = ({ tweetIds }) => {
-  if (tweetIds === undefined || !tweetIds.length) {
-    return (
-      <Text fontWeight="semibold" align="center">
-        Tweets not found
-      </Text>
-    )
-  }
-
+const EmbedTweets: React.FC<EmbedTweetsProps> = ({ tweets }) => {
   return (
-    <SimpleGrid columns={{ base: 1, md: 2, lg: 3, xl: 4 }} spacing={4}>
-      {tweetIds.map((tweetId, i) => (
-        <TwitterTweetEmbed key={i} tweetId={tweetId} />
-      ))}
-    </SimpleGrid>
+    <>
+      {!Array.isArray(tweets) || tweets.length === 0 ? (
+        <Text fontWeight="semibold" align="center">
+          Tweets not found
+        </Text>
+      ) : (
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3, xl: 4 }} spacing={4}>
+          {tweets.map((v, i) => (
+            <Card key={i} variant="elevated">
+              <CardHeader>
+                <Flex>
+                  <Flex>
+
+                    <Avatar name="test" src="https://bit.ly/sage-adebayo" />
+                    <Box>
+                      <Heading size="sm">Author Name</Heading>
+                      <Text>Author UID</Text>
+                    </Box>
+
+                    {/* TODO: TwitterIcon */}
+
+                  </Flex>
+                </Flex>
+              </CardHeader>
+              <CardBody>
+                <Text>{v.text}</Text>
+              </CardBody>
+              <Image
+                objectFit="cover"
+                src={v.media_url[0]}
+                alt={v.text}
+                mx={3}
+                borderRadius="lg"
+              />
+
+              <CardFooter
+                justify="space-between"
+                flexWrap="wrap"
+                sx={{
+                  "& > button": {
+                    minW: "136px",
+                  },
+                }}
+              >
+                <Button>Like</Button>
+
+              </CardFooter>
+            </Card>
+          ))}
+        </SimpleGrid>
+      )
+      }
+    </>
   )
 }
 

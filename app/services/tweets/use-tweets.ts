@@ -1,4 +1,4 @@
-import type { ApiContext, TweetObject } from "../../types/data"
+import type { ApiContext, Tweet } from "../../types/data"
 import useSWR from "swr"
 import { fetcher } from "../fetcher"
 
@@ -20,16 +20,20 @@ export type UseTweetsProps = {
    */
   props?: string[]
   /**
+   * 取得フィールド名
+   */
+  withMedia?: boolean
+  /**
    * 初期状態
    */
-  initial?: TweetObject[]
+  initial?: Tweet[]
 }
 
 export type UseTweets = {
   /**
    * 取得したツイート配列
    */
-  tweets?: TweetObject[]
+  tweets?: Tweet[]
   /**
    * Loadingフラグ
    */
@@ -47,7 +51,7 @@ export type UseTweets = {
  */
 const useTweets = (
   context: ApiContext,
-  { hashtagIds, limit, offset, props, initial }: UseTweetsProps
+  { hashtagIds, limit, offset, props, withMedia, initial }: UseTweetsProps
 ): UseTweets => {
   const path = `${context.apiRootUrl}/v1/tweets`
   const params = new URLSearchParams()
@@ -56,8 +60,9 @@ const useTweets = (
   limit && params.append("limit", limit.toString())
   offset && params.append("offset", offset.toString())
   props && params.append("props", props.join(","))
+  withMedia && params.append("withMedia", withMedia.toString())
 
-  const { data, error } = useSWR<TweetObject[]>(
+  const { data, error } = useSWR<Tweet[]>(
     path + "?" + params.toString(),
     fetcher,
   )

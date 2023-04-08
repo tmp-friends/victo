@@ -1,5 +1,5 @@
 import type { NextPage } from "next"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Avatar, Divider, Wrap, WrapItem } from "@chakra-ui/react"
 
@@ -16,50 +16,50 @@ const TopPage: NextPage = () => {
   const { followingHashtags, isLoading } = useFollowingHashtagsContext()
 
   // followingHashtagsがオブジェクトで返ってくるので配列形式に変換する
-  const l: Hashtag[] = []
+  const hashtags: Hashtag[] = []
   const hashtagIds: number[] = []
   for (const v of followingHashtags ?? []) {
-    l.push(v)
+    hashtags.push(v)
     hashtagIds.push(v.id)
   }
 
-  const [dispHashtag, setDispHashtag] = useState<number[]>(hashtagIds)
+  const [dispHashtag, setDispHashtag] = useState<number[]>([])
+  useEffect(() => {
+    if (hashtagIds.length > 0) {
+      setDispHashtag(hashtagIds)
+    }
+  }, [followingHashtags])
 
-  const { tweets } = useTweets(context, { hashtagIds: dispHashtag, limit: 20 })
-
-  const tweetIds: string[] = []
-  for (const v of tweets ?? []) {
-    tweetIds.push(v.tweet_id)
-  }
+  const tweetsData = useTweets(context, { hashtagIds: dispHashtag, limit: 20, withMedia: true })
 
   return (
     <>
-      <Wrap>
-        {
-          isLoading
-            ? <div>Loading...</div>
-            : l?.map((v: Hashtag, i: number) => {
-              return (
-                // AvatarでフォローしているHashtagのVtuberを表示する
-                <WrapItem key={i} onClick={() => setDispHashtag([v.id])}>
-                  <Avatar
-                    size="lg"
-                    name={v.name ?? ""}
-                    src={v.profile_image_url ?? ""}
-                  />
-                </WrapItem>
-              )
-            })
-        }
-      </Wrap>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Wrap>
+            {hashtags.map((v: Hashtag, i: number) => (
+              // AvatarでフォローしているHashtagのVtuberを表示する
+              <WrapItem key={i} onClick={() => setDispHashtag([v.id])}>
+                <Avatar
+                  size="lg"
+                  name={v.name ?? ""}
+                  src={v.profile_image_url ?? ""}
+                />
+              </WrapItem>
+            )
+            )}
+          </Wrap>
 
-      <Divider my={4} />
+          <Divider my={4} />
 
-      {/* Hashtag毎のツイートを表示する */}
-      {EmbedTweets({ tweetIds })}
+          {tweetsData.isLoading ? <div>Loading...</div> : EmbedTweets({ tweets: tweetsData.tweets })}
+        </>
+      )
+      }
     </>
   )
 }
-
 
 export default TopPage

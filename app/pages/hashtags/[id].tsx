@@ -27,35 +27,38 @@ const HashtagPage: NextPage<HashtagPageProps> = ({
     return <div>Loading...</div>
   }
 
-  const hashtagData = useHashtag(context, { id, withVtuber: true, initial: initialHashtag })
+  const hashtagData = useHashtag(
+    context,
+    {
+      id,
+      withVtuber: true,
+      initial: initialHashtag,
+    }
+  )
+
   const tweetsData = useTweets(
     context,
     {
       hashtagIds: [id],
       limit: 20,
-      props: ["id", "tweet_id", "hashtag_id"],
+      withMedia: true,
     },
   )
 
   const hashtag = hashtagData.hashtag ?? initialHashtag
   const tweets = tweetsData.tweets ?? initialTweets
 
-  const tweetIds: string[] = []
-  for (const v of tweets) {
-    tweetIds.push(v.tweet_id)
-  }
-
   return (
     <>
       {VtuberProfile({
         id: hashtag.id,
         name: hashtag.name,
-        imageUrl: hashtag.profile_image_url
+        imageUrl: hashtag.profile_image_url,
       })}
 
       <Divider mb={8} />
 
-      {EmbedTweets({ tweetIds })}
+      {EmbedTweets({ tweets })}
     </>
   )
 }
@@ -94,7 +97,7 @@ export const getStaticProps: GetStaticProps = async ({
     {
       hashtagIds: [hashtagId],
       limit: 20,
-      props: ["id", "tweet_id", "hashtag_id"],
+      withMedia: true,
     },
   )
 
