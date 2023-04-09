@@ -1,5 +1,5 @@
 import type { ApiContext, Tweet } from "../../types/data"
-import useSWR from "swr"
+import useSWRInfinite from "swr/infinite"
 import { fetcher } from "../fetcher"
 
 export type UseTweetsProps = {
@@ -26,14 +26,15 @@ export type UseTweetsProps = {
   /**
    * 初期状態
    */
-  initial?: Tweet[]
+  initial?: Tweet[][]
 }
 
 export type UseTweets = {
   /**
-   * 取得したツイート配列
+   * 取得したページごとのツイート配列
+   * ex. [Array(50), Array(50), Array(50)]
    */
-  tweets?: Tweet[]
+  tweetsChunks?: Tweet[][]
   /**
    * Loadingフラグ
    */
@@ -42,6 +43,14 @@ export type UseTweets = {
    * Errorフラグ
    */
   isError: boolean
+  /**
+   * 最後のページか判定フラグ
+   */
+  isLastPage: boolean
+  /**
+   * 追加読み込み関数
+   */
+  loadMore: () => void
 }
 
 /**
@@ -51,7 +60,7 @@ export type UseTweets = {
  */
 const useTweets = (
   context: ApiContext,
-  { hashtagIds, limit, offset, props, withMedia, initial }: UseTweetsProps
+  { hashtagIds, limit = 50, offset, props, withMedia, initial }: UseTweetsProps
 ): UseTweets => {
   const path = `${context.apiRootUrl}/v1/tweets`
   const params = new URLSearchParams()
@@ -62,15 +71,27 @@ const useTweets = (
   props && params.append("props", props.join(","))
   withMedia && params.append("withMedia", withMedia.toString())
 
-  const { data, error } = useSWR<Tweet[]>(
-    path + "?" + params.toString(),
-    fetcher,
-  )
+  // 各ページのSWRキーを取得する関数
+  const getKey = (pageIndex: number, previousPageData: Tweet[]) => {
+    if (previousPageData && !previousPageData.length) return null
+
+    return path + "?" + params.toString() + `&offset=${pageIndex * limit}`
+  }
+
+  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher, { initialSize: 1 })
+
+  const loadMore = () => {
+    setSize(size + 1)
+  }
+
+  const isLastPage = data && data.flat().length < limit ? true : false
 
   return {
-    tweets: data ?? initial,
+    tweetsChunks: data ?? initial,
     isLoading: !error && !data,
     isError: !!error,
+    isLastPage,
+    loadMore,
   }
 }
 
