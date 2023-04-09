@@ -1,16 +1,13 @@
 import type { NextPage } from "next"
 import { useEffect, useState } from "react"
 
-import { Avatar, Divider, Wrap, WrapItem } from "@chakra-ui/react"
+import { Text, Avatar, Divider, Wrap, WrapItem, Button } from "@chakra-ui/react"
 
 import { ApiContext, Hashtag } from "../types/data"
 import EmbedTweets from "../components/organisms/EmbedTweets"
 import { useFollowingHashtagsContext } from "../contexts/FollowingHashtagsContext"
 import useTweets from "../services/tweets/use-tweets"
-
-const context: ApiContext = {
-  apiRootUrl: process.env.NEXT_PUBLIC_API_ROOT_URL ?? "http://localhost:3001",
-}
+import EmbedTweetsContainer from "../containers/EmbedTweetsContainer"
 
 const TopPage: NextPage = () => {
   const { followingHashtags, isLoading } = useFollowingHashtagsContext()
@@ -30,12 +27,13 @@ const TopPage: NextPage = () => {
     }
   }, [followingHashtags])
 
-  const tweetsData = useTweets(context, { hashtagIds: dispHashtag, limit: 20, withMedia: true })
 
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <Text fontWeight="semibold" align="center">
+          Loading...
+        </Text>
       ) : (
         <>
           <Wrap>
@@ -54,7 +52,7 @@ const TopPage: NextPage = () => {
 
           <Divider my={4} />
 
-          {tweetsData.isLoading ? <div>Loading...</div> : EmbedTweets({ tweets: tweetsData.tweets })}
+          <EmbedTweetsContainer hashtagIds={dispHashtag} />
         </>
       )
       }

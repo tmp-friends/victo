@@ -5,6 +5,7 @@ import { Divider } from "@chakra-ui/react"
 
 import VtuberProfile from "../../components/organisms/VtuberProfile"
 import EmbedTweets from "../../components/organisms/EmbedTweets"
+import EmbedTweetsContainer from "../../containers/EmbedTweetsContainer"
 import useHashtag from "../../services/hashtags/use-hashtag"
 import useTweets from "../../services/tweets/use-tweets"
 import getHashtags from "../../services/hashtags/get-hashtags"
@@ -36,17 +37,7 @@ const HashtagPage: NextPage<HashtagPageProps> = ({
     }
   )
 
-  const tweetsData = useTweets(
-    context,
-    {
-      hashtagIds: [id],
-      limit: 20,
-      withMedia: true,
-    },
-  )
-
   const hashtag = hashtagData.hashtag ?? initialHashtag
-  const tweets = tweetsData.tweets ?? initialTweets
 
   return (
     <>
@@ -58,7 +49,7 @@ const HashtagPage: NextPage<HashtagPageProps> = ({
 
       <Divider mb={8} />
 
-      {EmbedTweets({ tweets })}
+      <EmbedTweetsContainer hashtagIds={[id]} initial={initialTweets} />
     </>
   )
 }
@@ -96,7 +87,7 @@ export const getStaticProps: GetStaticProps = async ({
     context,
     {
       hashtagIds: [hashtagId],
-      limit: 20,
+      limit: 50,
       withMedia: true,
     },
   )
