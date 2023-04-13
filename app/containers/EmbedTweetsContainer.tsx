@@ -1,4 +1,4 @@
-import { Text, Box, Button, Spinner } from "@chakra-ui/react"
+import { Text, Box, Button } from "@chakra-ui/react"
 
 import { ApiContext, Tweet } from "../types/data"
 import EmbedTweets from "../components/organisms/EmbedTweets"
