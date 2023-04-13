@@ -84,7 +84,7 @@ const useTweets = (
     setSize(size + 1)
   }
 
-  const isLastPage = data && data.flat().length < limit ? true : false
+  const isLastPage = data && data.flat().length % limit !== 0 ? true : false
 
   return {
     tweetsChunks: data ?? initial,

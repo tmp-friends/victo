@@ -53,7 +53,7 @@ const EmbedTweetsContainer = ({ hashtagIds, initial }: EmbedTweetsContainerProps
         ) : (
           <>
             {EmbedTweets({ tweetsChunks })}
-            {!isLastPage && (
+            {tweetsChunks && tweetsChunks.flat().length > 0 && !isLastPage && (
               <Box m={4}>
                 <Button
                   display="block"
@@ -65,6 +65,7 @@ const EmbedTweetsContainer = ({ hashtagIds, initial }: EmbedTweetsContainerProps
                   onClick={handleLoadMore}
                 >Load more!</Button>
               </Box>
+
             )}
 
           </>

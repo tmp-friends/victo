@@ -18,8 +18,8 @@ const EmbedTweets: React.FC<EmbedTweetsProps> = ({ tweetsChunks }) => {
 
   return (
     <>
-      {tweetsChunks === undefined || tweetsChunks.length === 0 ? (
-        <Text fontWeight="semibold" align="center">
+      {tweetsChunks === undefined || tweetsChunks.flat().length === 0 ? (
+        <Text fontWeight="semibold" align="center" pb={4}>
           Tweets not found
         </Text>
       ) : (
