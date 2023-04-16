@@ -20,7 +20,7 @@ export type UseTweetsProps = {
    */
   props?: string[]
   /**
-   * 取得フィールド名
+   * Mediaを含めるか
    */
   withMedia?: boolean
   /**
@@ -44,7 +44,7 @@ export type UseTweets = {
    */
   isError: boolean
   /**
-   * 最後のページか判定フラグ
+   * 最後のページか
    */
   isLastPage: boolean
   /**
