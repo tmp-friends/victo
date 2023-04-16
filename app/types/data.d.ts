@@ -19,6 +19,10 @@ export type Tweet = {
   created_at: Date
   updated_at: Date
   hashtag_id: number
+  author_id: string
+  author_name: string
+  author_username: string
+  author_profile_image_url: string
   media_key: string
   media_url: string
   media_type: string
