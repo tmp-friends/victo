@@ -20,7 +20,7 @@ export type GetTweetsParams = {
    */
   props?: string[]
   /**
-   * 取得フィールド名
+   * Mediaを含めるか
    */
   withMedia?: boolean
 }
